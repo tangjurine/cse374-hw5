@@ -33,6 +33,7 @@ struct dict_t {
 // data_file is where to write the data,
 // num_items is how many items this data file should store.
 struct dict_t* dictionary_new(char *data_file, size_t num_items) {
+
 }
 
 // Computes the size of the underlying file based on the # of items and the size
@@ -45,6 +46,7 @@ size_t dictionary_len(struct dict_t *dict) {
 // Open the underlying path (dict->path), ftruncate it to the appropriate length
 // (dictionary_len), then mmap it.
 int dictionary_open_map(struct dict_t *dict) {
+
 }
 
 
