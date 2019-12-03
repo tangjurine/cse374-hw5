@@ -33,7 +33,8 @@ struct dict_t {
 // data_file is where to write the data,
 // num_items is how many items this data file should store.
 struct dict_t* dictionary_new(char *data_file, size_t num_items) {
-  dict_t dict = {.path = data_file, .num_items = num_items};
+  struct dict_t* dict = malloc(sizeof(struct dict_t));
+  return dict;
 }
 
 // Computes the size of the underlying file based on the # of items and the size
@@ -46,16 +47,23 @@ size_t dictionary_len(struct dict_t *dict) {
 // Open the underlying path (dict->path), ftruncate it to the appropriate length
 // (dictionary_len), then mmap it.
 int dictionary_open_map(struct dict_t *dict) {
-  int fd = open(dict->path);
+  int fd = open(dict->path, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR);
+  if (fd == -1) {
+    perror("open");
+    return EXIT_FAILURE;
+  }
+  
   int len = dictionary_len(dict);
   if (ftruncate(fd, len) == -1) {
     perror("ftruncate");
+    return EXIT_FAILURE;
   }
   dict->base = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   if (dict->base == MAP_FAILED) {
     perror("mmap");
+    return EXIT_FAILURE;
   }
-  return fd;
+  return EXIT_SUCCESS;
 }
 
 // The rest of the functions should be whatever is left from the header that
