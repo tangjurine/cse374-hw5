@@ -34,6 +34,8 @@ struct dict_t {
 // num_items is how many items this data file should store.
 struct dict_t* dictionary_new(char *data_file, size_t num_items) {
   struct dict_t* dict = malloc(sizeof(struct dict_t));
+  dict->path = data_file;
+  dict->num_items = num_items;
   return dict;
 }
 
