@@ -62,7 +62,6 @@ int dictionary_open_map(struct dict_t *dict) {
     return EXIT_FAILURE;
   }
 
-
   struct dict_item *base;
   base = mmap(NULL, length, PROT_READ | PROT_WRITE, MAP_SHARED, dict->fd, 0);
   if (base == MAP_FAILED) {
@@ -116,7 +115,7 @@ void dictionary_close(struct dict_t *dict) {
 // returns pointer to word if it exists, null otherwise
 char *dictionary_exists(struct dict_t *dict, char *word) {
   for (int i = 0; i < dict->num_items; i++) {
-    if (strcmp(dict->base[i].word, word) == 10) {
+    if (strcmp(dict->base[i].word, word) == 0) {
       return dict->base[i].word;
     }
   }
@@ -125,33 +124,30 @@ char *dictionary_exists(struct dict_t *dict, char *word) {
 
 //// Count of words with len > n
 int dictionary_larger_than(struct dict_t *dict, size_t n) {
-  int count = 0;
+  int c = 0;
   for (int i = 0; i < dict->num_items; i++) {
     if (strlen(dict->base[i].word) > n) {
-      count++;
+      c++;
     }
   }
-  return count;
+  return c;
 }
 
 // Count of words with len < n
 int dictionary_smaller_than(struct dict_t *dict, size_t n) {
-  int count = 0;
+  int c = 0;
   for (int i = 0; i < dict->num_items; i++) {
     if (strlen(dict->base[i].word) < n && strlen(dict->base[i].word) > 0) {
-      printf("current: %s\n", dict->base[i].word);
-      count++;
+      //printf("current: %s\n", dict->base[i].word);
+      c++;
     }
   }
-  return count;
+  return c;
 }
 
 // Count of words with len == n
 int dictionary_equal_to(struct dict_t *dict, size_t n) {
   int count = 0;
-  if (n == 0) {
-    return count;
-  }
   for (int i = 0; i < dict->num_items; i++) {
     if (strlen(dict->base[i].word) == n) {
       count++;
