@@ -77,7 +77,6 @@ int dictionary_open_map(struct dict_t *dict) {
 // Read the file at input. For each line in input, create a new dictionary
 // entry. 
 int dictionary_generate(struct dict_t *dict, char *input) {
-  dict->path = input;
   dictionary_open_map(dict);
   FILE* file = fopen(dict->path, "r");
   if (file == NULL) {
