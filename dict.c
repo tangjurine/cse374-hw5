@@ -49,23 +49,26 @@ size_t dictionary_len(struct dict_t *dict) {
 // Open the underlying path (dict->path), ftruncate it to the appropriate length
 // (dictionary_len), then mmap it.
 int dictionary_open_map(struct dict_t *dict) {
-  dict->fd = open(dict->path, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR);
-  if (dict->fd == -1) {
+  int fd = open(dict->path, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR);
+  if (fd == -1) {
     perror("open");
     return EXIT_FAILURE;
   }
+  dict->fd = fd;
   
-  dict->num_items = dictionary_len(dict);
-  if (ftruncate(dict->fd, dict->num_items) == -1) {
+  size_t num_items = dictionary_len(dict);
+  if (ftruncate(fd, num_items) == -1) {
     perror("ftruncate");
     return EXIT_FAILURE;
   }
+  dict->num_items = num_items;
 
-  dict->base = mmap(NULL, dict->num_items, PROT_READ | PROT_WRITE, MAP_SHARED, dict->fd, 0);
-  if (dict->base == MAP_FAILED) {
+  struct dict_item* base = mmap(NULL, num_items, PROT_READ | PROT_WRITE, MAP_SHARED, dict->fd, 0);
+  if (base == MAP_FAILED) {
     perror("mmap");
     return EXIT_FAILURE;
   }
+  dict->base = base;
   return EXIT_SUCCESS;
 }
 
@@ -78,12 +81,12 @@ int dictionary_open_map(struct dict_t *dict) {
 // entry. 
 int dictionary_generate(struct dict_t *dict, char *input) {
   dictionary_open_map(dict);
-  FILE* file = fopen(dict->path, "r");
+  FILE* file = fopen(input, "r");
   if (file == NULL) {
     perror("fopen");
     return EXIT_FAILURE;
   }
-  char line [100];
+  char line [100] = {0};
   int i = 0;
   while (fgets(line, 100, file) != NULL) {
     if (strcmp(line, "\n") == 0) {
