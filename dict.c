@@ -80,6 +80,10 @@ int dictionary_generate(struct dict_t *dict, char *input) {
   dict->path = input;
   dictionary_open_map(dict);
   FILE* file = fopen(dict->path, "r");
+  if (file == NULL) {
+    perror("fopen");
+    return EXIT_FAILURE;
+  }
   char line [100];
   int i = 0;
   while (fgets(line, 100, file) != NULL) {
