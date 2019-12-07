@@ -88,7 +88,7 @@ int dictionary_generate(struct dict_t *dict, char *input) {
   }
   char line[100] = { 0 };
   int i = 0;
-  while (fgets(line, 100, file) != NULL) {
+  while (fgets(line, dict->num_items, file) != NULL) {
     if (strcmp(line, "\n") == 0) {
       strcpy(dict->base[i].word, "");
     } else {
