@@ -76,7 +76,6 @@ int dictionary_open_map(struct dict_t *dict) {
 // hasn't been defined yet.
 // Good luck
 
-
 // Read the file at input. For each line in input, create a new dictionary
 // entry.
 int dictionary_generate(struct dict_t *dict, char *input) {
