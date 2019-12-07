@@ -29,6 +29,16 @@ struct dict_t {
   struct dict_item *base;
 };
 
+// Construct a new dict_t struct.
+// data_file is where to write the data,
+// num_items is how many items this data file should store.
+struct dict_t *dictionary_new(char *data_file, size_t num_items) {
+  struct dict_t *dict = malloc(sizeof(struct dict_t));
+  dict->path = data_file;
+  dict->num_items = num_items;
+  return dict;
+}
+
 // Computes the size of the underlying file based on the # of items and the size
 // of a dict_item.
 size_t dictionary_len(struct dict_t *dict) {
@@ -45,43 +55,46 @@ int dictionary_open_map(struct dict_t *dict) {
     return EXIT_FAILURE;
   }
   dict->fd = fd;
-  size_t len = dictionary_len(dict);
-  if (ftruncate(dict->fd, len) == -1) {
+
+  size_t length = dictionary_len(dict);
+  if (ftruncate(dict->fd, length) == -1) {
     perror("truncate");
     return EXIT_FAILURE;
   }
 
-  struct dict_item *items;
-  items = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, dict->fd, 0);
-  if (items == MAP_FAILED) {
+
+  struct dict_item *base;
+  base = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, dict->fd, 0);
+  if (base == MAP_FAILED) {
     perror("mmap");
     return EXIT_FAILURE;
   }
-  dict->base = items;
+  dict->base = base;
   return EXIT_SUCCESS;
 }
+
+// The rest of the functions should be whatever is left from the header that
+// hasn't been defined yet.
+// Good luck
+
 
 // Read the file at input. For each line in input, create a new dictionary
 // entry.
 int dictionary_generate(struct dict_t *dict, char *input) {
   dictionary_open_map(dict);
-  FILE *fp;
-  char str[100] = { 0 };
-  fp = fopen(input, "r");
-  if (fp == NULL) {
+  FILE *file = fopen(input, "r");
+  if (file == NULL) {
     perror("file opening");
   }
 
+  char str[100] = { 0 };
   int i = 0;
-  while (fgets(str, dict->num_items, fp)) {
+  while (fgets(str, dict->num_items, file)) {
     strcpy(dict->base[i].word, strtok(str, "\n"));
     dict->base[i].len = strlen(str);
     i++;
-    if (feof(fp)) {
-      break;
-    }
   }
-  fclose(fp);
+  fclose(file);
   return EXIT_SUCCESS;
 }
 
@@ -145,14 +158,4 @@ int dictionary_equal_to(struct dict_t *dict, size_t n) {
     }
   }
   return count;
-}
-
-// Construct a new dict_t struct.
-// data_file is where to write the data,
-// num_items is how many items this data file should store.
-struct dict_t *dictionary_new(char *data_file, size_t num_items) {
-  struct dict_t *dict_new = malloc(1 * sizeof(struct dict_t));
-  dict_new->path = data_file;
-  dict_new->num_items = num_items;
-  return dict_new;
 }
