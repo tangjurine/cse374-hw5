@@ -61,7 +61,7 @@ int dictionary_open_map(struct dict_t *dict) {
     perror("ftruncate");
     return EXIT_FAILURE;
   }
-  dict->num_items = num_items;
+  //dict->num_items = num_items;
 
   struct dict_item *base =
       mmap(NULL, num_items, PROT_READ | PROT_WRITE, MAP_SHARED, dict->fd, 0);
