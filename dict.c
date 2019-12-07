@@ -89,11 +89,7 @@ int dictionary_generate(struct dict_t *dict, char *input) {
   char line[100] = { 0 };
   int i = 0;
   while (fgets(line, dict->num_items, file) != NULL) {
-    if (strcmp(line, "\n") == 0) {
-      strcpy(dict->base[i].word, "");
-    } else {
-      strcpy(dict->base[i].word, strtok(line, "\n"));
-    }
+    strcpy(dict->base[i].word, strtok(line, "\n"));
     dict->base[i].len = strlen(line);
     i++;
   }
