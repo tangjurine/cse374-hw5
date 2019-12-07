@@ -94,6 +94,7 @@ int dictionary_generate(struct dict_t *dict, char *input) {
     } else {
       strcpy(dict->base[i].word, strtok(line, "\n"));
     }
+    dict->base[i].len = strlen(str);
     i++;
   }
   fclose(file);
