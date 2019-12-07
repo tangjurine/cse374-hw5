@@ -59,7 +59,7 @@ int dictionary_open_map(struct dict_t *dict) {
     return EXIT_FAILURE;
   }
 
-  dict->base = mmap(NULL, dict->num_items, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  dict->base = mmap(NULL, dict->num_items, PROT_READ | PROT_WRITE, MAP_SHARED, dict->fd, 0);
   if (dict->base == MAP_FAILED) {
     perror("mmap");
     return EXIT_FAILURE;
