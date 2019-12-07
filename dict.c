@@ -59,7 +59,7 @@ int dictionary_open_map(struct dict_t *dict) {
     return EXIT_FAILURE;
   }
 
-  dict->base = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  dict->base = mmap(NULL, dict->num_items, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   if (dict->base == MAP_FAILED) {
     perror("mmap");
     return EXIT_FAILURE;
@@ -80,7 +80,7 @@ int dictionary_generate(struct dict_t *dict, char *input) {
   FILE* file = fopen(dict->path, "r");
   char line [100];
   int i = 0;
-  while (fgets(line, 100, file) != null) {
+  while (fgets(line, 100, file) != NULL) {
     if (strcmp(line, "\n") == 0) {
       strcpy(dict->base[i].word, "");
     } else {
@@ -89,7 +89,7 @@ int dictionary_generate(struct dict_t *dict, char *input) {
     i++;
   }
   fclose(file);
-  return EXIT_SUCESS;
+  return EXIT_SUCCESS;
 }
 
 //
