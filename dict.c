@@ -80,7 +80,6 @@ int dictionary_open_map(struct dict_t *dict) {
 // Read the file at input. For each line in input, create a new dictionary
 // entry.
 int dictionary_generate(struct dict_t *dict, char *input) {
-  dict->path = input;
   dictionary_open_map(dict);
   FILE *file = fopen(input, "r");
   if (file == NULL) {
@@ -93,6 +92,9 @@ int dictionary_generate(struct dict_t *dict, char *input) {
     strcpy(dict->base[i].word, strtok(line, "\n"));
     dict->base[i].len = strlen(line);
     i++;
+    if (feof(file)) {
+      break;
+    }
   }
   fclose(file);
   return EXIT_SUCCESS;
